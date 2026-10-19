@@ -17,7 +17,7 @@ console = Console()
 
 lquestionbank = QuestionBank()
 board=ScoreBoard()
-questions: list[Question] = lquestionbank.pick()
+questions = lquestionbank.pick()
 
 def show_leaderboard(board):
     pass

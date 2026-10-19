@@ -4,12 +4,18 @@ from pathlib import Path
 # from app_log import AppLog
 from engine import Question, ROUNDS
 # AppLog.setup()
-QUESTION_PATH = Path(__file__).with_name("questions.json")
-QUESTION_PATH = "questions.json"
-LEADERBOARD_PATH = "leaderboard.json"
+import sys
+
+def app_dir() -> Path:
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).parent
+    return Path(__file__).parent
+
+QUESTION_PATH = app_dir() / "questions.json"
+LEADERBOARD_PATH = app_dir() / "leaderboard.json"
 # uiyuykytj
 class QuestionBank:
-    def __init__(self, path: str | Path = QUESTION_PATH) -> None:
+    def __init__(self, path = QUESTION_PATH) -> None:
         try:
             with open(path, "r", encoding="utf-8") as f:
                 data = json.load(f)
@@ -27,7 +33,7 @@ class QuestionBank:
     def count(self) -> int:
         return len(self._questions)
 
-    def pick(self, n: int = ROUNDS) -> list[Question]:
+    def pick(self, n: int = ROUNDS):
         if not self._questions:
             return []
         if n <= 0:
@@ -58,7 +64,7 @@ class ScoreBoard:
         if winner is not None:
             self._data[winner]["wins"] += 1
         self._save()
-    def top(self,n:int = 5) -> list[tuple[str,int]]:
+    def top(self,n:int = 5):
         def wins_then_points(item) -> tuple:
             return item[1]["wins"], item[1]["points"]
         return sorted(self._data.items(),key=wins_then_points,reverse=True)[:n]
